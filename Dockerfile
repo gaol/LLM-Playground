@@ -14,9 +14,10 @@ RUN pip install -r requirements.txt
 USER lgao
 
 ARG USER_HOME_DIR="/home/lgao"
+ARG PROJECT_BASE_DIR="${USER_HOME_DIR}/llm"
 # create workspace directory to share to all
-RUN mkdir -p ${USER_HOME_DIR}/notebooks ${USER_HOME_DIR}/shares
-WORKDIR ${USER_HOME_DIR}/notebooks
+RUN mkdir -p ${PROJECT_BASE_DIR}
+WORKDIR ${PROJECT_BASE_DIR}
 
 RUN jupyter notebook --generate-config
 
@@ -27,8 +28,9 @@ RUN echo "c.ServerApp.disable_check_for_update = True" >> ${USER_HOME_DIR}/.jupy
 
 # sys append shared utilties
 RUN mkdir -p ${USER_HOME_DIR}/.ipython/profile_default/startup
-RUN COPY 00-add-path.py ${USER_HOME_DIR}/.ipython/profile_default/startup/00-add-path.py && sed -i "s/__SHARED_LIB_DIR__/${USER_HOME_DIR}/shares" ${USER_HOME_DIR}/.ipython/profile_default/startup/00-add-path.py
+COPY 00-add-path.py ${USER_HOME_DIR}/.ipython/profile_default/startup/00-add-path.py
+RUN sed -i "s|__SHARED_LIB_DIR__|${PROJECT_BASE_DIR}/shares|g" ${USER_HOME_DIR}/.ipython/profile_default/startup/00-add-path.py
 
 EXPOSE 8888
 
-CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--allow-root", "--no-browser", "--autoreload", "--notebook-dir=/home/lgao/notebook"]
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--allow-root", "--no-browser", "--autoreload", "--notebook-dir=/home/lgao/llm"]

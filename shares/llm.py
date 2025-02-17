@@ -1,6 +1,6 @@
 import json
 from dataclasses import dataclass, field
-from enum import Enum, Flag, auto
+from enum import Flag, auto
 from typing import Optional, Dict, List
 
 # An Enum based class
@@ -73,6 +73,10 @@ class LLMProviderRegistry:
     def list_models(self) -> Dict[str, ModelConfig]:
         """Lists all registered AI models."""
         return self.models
+
+    def __iter__(self):
+        """Iterates over the models in the registry."""
+        return iter(self.models.values())
 
     def load_from_json(self, file_path: str):
         """Loads models from a JSON file."""
