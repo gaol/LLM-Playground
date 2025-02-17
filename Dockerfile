@@ -29,7 +29,7 @@ RUN echo "c.ServerApp.disable_check_for_update = True" >> ${USER_HOME_DIR}/.jupy
 # sys append shared utilties
 RUN mkdir -p ${USER_HOME_DIR}/.ipython/profile_default/startup
 COPY 00-add-path.py ${USER_HOME_DIR}/.ipython/profile_default/startup/00-add-path.py
-RUN sed -i "s|__SHARED_LIB_DIR__|${PROJECT_BASE_DIR}/shares|g" ${USER_HOME_DIR}/.ipython/profile_default/startup/00-add-path.py
+RUN sed -i "s|__SHARED_LIB_DIR__|${PROJECT_BASE_DIR}|g" ${USER_HOME_DIR}/.ipython/profile_default/startup/00-add-path.py
 
 EXPOSE 8888
 
