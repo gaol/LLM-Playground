@@ -173,3 +173,8 @@ cython_debug/
 # these json files should stay at local
 models/models.json
 tools/tools.json
+
+# .env file contains api_keys which can not be pushed to git.
+.env
+config.json
+config.yaml

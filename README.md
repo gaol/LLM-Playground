@@ -1,2 +1,2 @@
 # LLM-Playground
-It is a playground to interference with LLM providers 
+It is a playground to infer with LLM providers

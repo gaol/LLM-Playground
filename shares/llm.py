@@ -1,3 +1,4 @@
+import os
 import json
 from dataclasses import dataclass, field
 from enum import Flag, auto
@@ -48,7 +49,7 @@ class ModelConfig:
         return cls(
             name=data["name"],
             base_url=data["base_url"],
-            api_key=data.get("api_key"),
+            api_key=os.getenv(data["api_key"]),
             model=data.get("model"),
             modality=ModalityType[data.get("modality", "TEXT_TO_TEXT")],
             tools=data.get("tools", []),
