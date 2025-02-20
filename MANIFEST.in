@@ -1,0 +1,5 @@
+include requirements.txt
+recursive-include models *
+recursive-include tools *
+recursive-include notebooks *.py
+recursive-include notebooks *.ipynb

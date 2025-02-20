@@ -19,7 +19,7 @@ echo -e "Now start the local_jupyter container with 8888 port exposed, stop the 
 docker run -p 8888:8888 --rm \
     --name local_jupyter \
     -v "${SCRIPT_DIR}/notebooks":/home/lgao/llm/notebooks:rw \
-    -v "${SCRIPT_DIR}/shares":/home/lgao/llm/shares:ro \
+    -v "${SCRIPT_DIR}/llms_playground":/home/lgao/llm/llms_playground:ro \
     -v "${SCRIPT_DIR}/models":/home/lgao/llm/models:ro \
     -v "${SCRIPT_DIR}/tools":/home/lgao/llm/tools:ro \
     -v "${SCRIPT_DIR}/.env":/home/lgao/llm/.env:ro \
