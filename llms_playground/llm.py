@@ -1,23 +1,27 @@
-import sys
 import json
-import importlib
 import logging
 
 from typing import Optional, Dict
 
-from llms_playground import BASE_DIR
-from llms_playground.base import ModelConfig, LLMHandler
+from llms_playground.base import BASE_DIR, ModelConfig, LLMHandler, _ModelProvider
 
-def _load_function(module_name: str, module_path: str, function_name: str):
-    """Load a function dynamically from a Python file."""
+LOGGER = logging.getLogger(__name__)
 
-    spec = importlib.util.spec_from_file_location(module_name, module_path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Cannot load module {module_name} from {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module
-    spec.loader.exec_module(module)  # Load the module dynamically
-    return getattr(module, function_name)  # Get the function
+def load_openai_handler(model_path: ModelConfig) -> LLMHandler:
+    try:
+        from llms_playground.openai import OpenAILLM
+        return OpenAILLM(model_path)
+    except Exception as e:
+        LOGGER.error(f"Faied to load OpenAILLM: {e}", exc_info=True)
+        raise e # throw it out
+
+def load_ollama_handler(model_path: ModelConfig) -> LLMHandler:
+    try:
+        from llms_playground.ollama import OllamaLLM
+        return OllamaLLM(model_path)
+    except Exception as e:
+        LOGGER.error(f"Faied to load OllamaLLM: {e}", exc_info=True)
+        raise e # throw it out
 
 class LLMProviderRegistry:
     """Manages a collection of AI models with dynamic configuration support."""
@@ -65,11 +69,9 @@ class LLMProviderRegistry:
         model_config = self.get_model(name)
         if model_config is None:
             return None
-        provider_name = model_config.provider.name.lower()
-        module_path = f"{BASE_DIR}/llms/{provider_name}.py"
-        try:
-            llm_func = _load_function(provider_name, module_path, "__llm__")
-            return llm_func(model_config)
-        except Exception as e:
-            logging.error(f"An error occurred: {e}", exc_info=True)
-            return None
+        if model_config.provider is _ModelProvider.OPENAI:
+            return load_openai_handler(model_config)
+        elif model_config.provider is _ModelProvider.OLLAMA:
+            return load_ollama_handler(model_config)
+        else:
+            raise ValueError(f"Not supported LLM Provider: {model_config.provider}")

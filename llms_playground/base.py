@@ -4,15 +4,18 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum, Flag, auto
 from typing import Dict, List, Union
+from pathlib import Path
+
+# project base dir
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 class _ModelProvider(Enum):
     """
     The base.py contains internal classes which are implementation related.
 
     New provider can be added later.
-    The lowercase of the provider will be loaded to call specific constructor to AI provider dependent instances.
 
-    ie: in openai.py, call `__llm__(modelConfig)` method to return an instance of `LLMHandler`
+    OPENAI is not limit to OpenAI, but also for OpenAI compatible services.
     """
     OPENAI = 1
     OLLAMA = 2
@@ -95,22 +98,22 @@ class LLMHandler(ABC):
         pass
 
     @abstractmethod
-    def embedding(self, input: Union[str, List[str]], user_params = None) -> List[float]:
+    def embedding(self, input: Union[str, List[str]], sys_message = None, user_params = None) -> List[float]:
         """ Get Embedding by talking to an embedding model. """
         pass
 
     @abstractmethod
-    def image(self, input: Union[str, List[str]], user_params = None):
+    def image(self, input: Union[str, List[str]], sys_message = None, user_params = None):
         """ Talk with an image model to generate images based on the input text. """
         pass
 
     @abstractmethod
-    def audio(self, input: Union[str, List[str]], user_params = None):
+    def audio(self, input: Union[str, List[str]], sys_message = None, user_params = None):
         """ Talk with an model to generate audios based on the input text. """
         pass
 
     @abstractmethod
-    def video(self, input: Union[str, List[str]], user_params = None):
+    def video(self, input: Union[str, List[str]], sys_message = None, user_params = None):
         """ Talk with an model to generate videos based on the input text. """
         pass
 
